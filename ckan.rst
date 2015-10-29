@@ -411,9 +411,9 @@ and run a pycsw server on localhost:9000.
 See also nginx settings in :doc:`deployment` to expose the csw server publicly.
 
 
-************
-Data Loading
-************
+******************
+Disaster Recovery
+*****************
 
 Examples
 ========
