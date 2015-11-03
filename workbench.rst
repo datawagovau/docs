@@ -171,29 +171,42 @@ Pull and run the `Taverna`_ Server `Docker image`_::
 .. _`Docker image`: https://hub.docker.com/r/taverna/taverna-server/
 
 
-***
 Map
-***
+===
 
-This chapter will setup a local copy of NationalMap, which will come in handy for CKANs running behind firewalls, 
+This section will setup a local copy of NationalMap, which will come in handy for running behind firewalls, 
 where the official NationalMap can't access datasets for preview.
 
 1. Clone, install and run NationalMap as per `NationalMap docs`_::
 
- /var/projects/$ clone https://github.com/NICTA/nationalmap.git
- /var/projects/nationalmap/$  sudo apt-get install -y git-core gdal-bin
- /var/projects/nationalmap/$ sudo npm install -g gulp
- /var/projects/nationalmap/$ sudo npm install
- /var/projects/nationalmap/$ gulp
+  sudo apt-get install -y git-core gdal-bin
+ 
+  curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
+
+  sudo apt-get install -y nodejs
+  
+  sudo npm install -g gulp
+  
+  /var/projects/$ clone https://github.com/NICTA/nationalmap.git
+ 
+  /var/projects/nationalmap/$ sudo npm install
+ 
+  /var/projects/nationalmap/$ gulp
 
 2. Create a supervisord config ``/etc/supervisor/conf.d/nmap.conf``::
   
   [program:nmap]
+  
   user=www-data
+  
   stopasgroup=true
+  
   autostart=true
+  
   autorestart=true
+  
   directory=/mnt/projects/nationalmap
+  
   command=/usr/bin/npm start
   
 
@@ -202,9 +215,12 @@ where the official NationalMap can't access datasets for preview.
 4. Start NationalMap
 
   sudo supervisorctl stop nmap
+
   # modify datasources/xx.json
+
   /var/projects/nationalmap/$  gulp
-  sudo supervisorctl start nmap
+
+  gulp && sudo supervisorctl start nmap
 
 .. _`NationalMap docs`: https://github.com/NICTA/nationalmap/wiki/Deploying-a-copy-of-National-Map
 .. _`DPaW sources`: https://github.com/datawagovau/nationalmap/tree/dpaw
