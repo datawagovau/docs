@@ -862,3 +862,18 @@ You can do run/commit as many times as you'd like, but if you're making a lot of
 Report a bug
 ------------
 Submit working additions as a new datacats issue at https://github.com/datacats/datacats/issues/new.
+
+
+Install extensions selectively
+------------------------------
+
+``datacats install`` installs all downloaded extensions in an environment directory.
+To install an extension individually, run::
+
+  datacats shell
+  cd ckanext-EXTENSION
+  python setup.py develop
+  exit
+  
+This will install the extension into the datacats environment.
+Running ``python setup.py develop`` outside the datacats shell will not install the extension into the datacats environment.
