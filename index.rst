@@ -34,6 +34,8 @@ Installing from source is superseded by datacats and docker, but might be advata
 
   deployment
   ckan
+  disaster-recovery
+  operations
   workbench
   govhack2015
   ckan-source-install
