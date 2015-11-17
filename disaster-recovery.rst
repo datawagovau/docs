@@ -6,6 +6,7 @@ Examples
 ========
 
 The following examples are taken from Ian Ward's talk at the CKANConf Ottawa 2015 as published on his `blog`_.
+They serve illustrative purpose; real-life DR and migration is documented in the next section.
 Exporting data (backup), restoring to same (disaster recovery) or remote (migration) instance::
 
   ckanapi dump groups | ssh otherbox ckanapi load groups -p 3
@@ -48,18 +49,21 @@ Notes:
 
 Backup & Restore
 ================
+This section describes the Disaster Recovery procedure assuming that a simple 
+db dump / clean / load doesn't work.
 
 Users
 -----
 Ckanapi does not export users with password hashes. We'll have to migrate existin users manually.::
 
+  # exporting users, data only (-a), no owner (-O) from a non-datacats CKAN into file (-f) users.sql
   sudo su
-  sudo -u postgres pg_dump -a -O -t user -f user.sql ckan_private 
+  sudo -u postgres pg_dump -h localhost -p 5432 -a -O -t user -f users.sql CKAN_DBNAME
   
   # chown to datacats user and appropriate group
-  sudo chown ubuntu:www-data user.sql
+  sudo chown ubuntu:www-data users.sql
   
-  # delete lines "default", "logged_in", "visitor" from user.sql
+  # delete lines "default", "logged_in", "visitor" from users.sql
 
   # print passwords in datacats env:
   cat ~/.datacats/ENV_NAME/sites/primary/passwords.ini
@@ -67,7 +71,7 @@ Ckanapi does not export users with password hashes. We'll have to migrate existi
   (datacats venv)me@machine:/path/to/ENV_NAME⟫ datacats shell
   
   #datacats shell
-  (ckan)shell@ENV_NAME:~$ psql -h db -d ckan -U postgres -f user.sql
+  (ckan)shell@ENV_NAME:~$ psql -h db -d ckan -U postgres -f users.sql
   # paste password for user "postgres"
   
   (ckan)shell@ENV_NAME:~$ exit
@@ -102,7 +106,7 @@ Run any time::
 
 Archive
 =======
-Create a scheduled job to dump the db as well as the users, groups, orgs, datasets and 
+To archive all data, create a scheduled job to dump the db as well as the users, groups, orgs, datasets and 
 rsync the dumps as well as the files (resource storage) to a secure place.
 
 
