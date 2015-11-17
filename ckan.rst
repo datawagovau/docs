@@ -38,7 +38,7 @@ Datacats install
 With the datacats virtualenv activated, clone the datacats repo and pull the Docker images::
 
   workon ckan
-  (ckan)ubuntu@ip-172-31-14-85:/var/projects/ckan$ 
+  (ckan)ubuntu@ip:/var/projects/ckan$ 
   
   git clone https://github.com/datacats/datacats.git
   cd datacats
@@ -88,7 +88,7 @@ Extensions
 ==========
 The following list of extensions displays their installation status on our example `CKAN`_.
 
-.. _CKAN: http://catalogue.alpha.data.wa.gov.au/
+.. _CKAN: http://catalogue.beta.data.wa.gov.au/
 
 The installation process is:
 
@@ -164,8 +164,9 @@ non-root user "ubuntu" (who must be in the docker group) in the CKAN environment
   cd test/
   (ckan)ubuntu@ip:/var/projects/ckan/test$
 
+
 Download extensions
-===================
+-------------------
 Run::
 
   git config --global push.default matching 
@@ -220,7 +221,7 @@ Run::
   sudo apt-get install -y python-dev libxml2-dev libxslt-dev libgeos-dev
 
 Manage dependency conflicts
-===========================
+---------------------------
 Before running through this section, note that dependency conflicts are caused by
 multiple independently developed code bases of ckan and its plugins.
 Each code base pins third party library versions known to work at the time of release.
@@ -282,7 +283,7 @@ E.g., this is necessary when receiving this error on datacats reload::
 
   
 Install extensions
-==================
+------------------
 To install all extensions and their dependencies in the site's environment, run::
 
   datacats install
@@ -319,31 +320,36 @@ Following `ckanext-spatial docs`_ and `ckanext-harvest docs`_ with datacats' `pa
 
 Note: ``git init`` the theme extension (ckanext-SITEtheme) to preserve significant customisations.
 
-Enable extensions
-=================
+Config
+======
 General procedure:
 
-* Edit config `vim development.ini`, replace the Plugins section with settings below
+* Edit config `vim development.ini`, replace everything from "Authorization Settings" with settings below.
 * Apply changes with `datacats reload`. That should be it!
 
 ``development.ini``::
 
-  ## Authorization Settings
+ ## Authorization Settings
   ckan.auth.anon_create_dataset = false
   ckan.auth.create_unowned_dataset = false
   ckan.auth.create_dataset_if_not_in_organization = false
-  ckan.auth.user_create_groups = false
+  ckan.auth.user_create_groups = true
   ckan.auth.user_create_organizations = false
-  ckan.auth.user_delete_groups = false
+  ckan.auth.user_delete_groups = true
   ckan.auth.user_delete_organizations = false
   ckan.auth.create_user_via_api = true
   ckan.auth.create_user_via_web = true
   ckan.auth.roles_that_cascade_to_sub_groups = admin editor member
-
+  
+  ## Search Settings
+  ckan.site_id = default
+  solr_url = http://solr:8080/solr
+  
+  ## CORS Settings
   ckan.cors.origin_allow_all = true
   
   ## Plugins Settings
-  base = cesium_viewer resource_proxy datastore datapusher datawagovau_theme stats archiver qa pages featuredviews showcase disqus
+  base = cesium_viewer resource_proxy datastore datapusher datawagovau_theme stats archiver qa featuredviews showcase disqus
   sch = scheming_datasets
   rcl = recline_grid_view recline_graph_view recline_map_view
   prv = text_view image_view recline_view pdf_view webpage_view
@@ -352,19 +358,18 @@ General procedure:
   hie = hierarchy_display hierarchy_form
   dcat = dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface
   hrv = harvest ckan_harvester csw_harvester
+  pkg = datapackager downloadtdf
   ckan.plugins = %(base)s %(sch)s %(rcl)s %(prv)s %(dcat)s %(geo)s %(spt)s %(hrv)s %(hie)s
+  #%(pkg)s ## missing ckan branch datapackager
   
   ckanext.geoview.ol_viewer.formats = wms wfs gml kml arcgis_rest gft
   ckan.views.default_views = cesium_view %(prv)s geojson_view
   
-  ckan.max_resource_size = 1000000
-  ckan.max_image_size = 200000
-  ckan.resource_proxy.max_file_size = 31457280
   
   # ckanext-scheming
   scheming.dataset_schemas = ckanext.datawagovautheme:datawagovau_dataset.json
   #scheming.organization_schemas = ckanext.datawagovautheme:datawagovau_organization.json
-
+  
   # ckanext-harvest
   ckan.harvest.mq.type = redis
   ckan.harvest.mq.hostname = redis
@@ -383,21 +388,95 @@ General procedure:
   # choose name = disqus.name
   # settings > advanced >
   # add %(site_url)s to trusted domains, e.g. catalogue.beta.data.wag.gov.au
-  disqus.name = datawagovau-ckan
+  disqus.name = xxxx
   
-  ckan.datapusher.formats = csv xls xlsx tsv application/csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-  
-  ckan.activity_streams_enabled = true
-  ckan.activity_list_limit = 31
-  
-  # Front-end settings
-  ...
-  
+  ## Front-End Settings
+  ckan.site_title = Parks & Wildlife Data
+  ckan.site_logo = /logo.png
+  ckan.site_description =
+  ckan.favicon = /favicon.ico
+  ckan.gravatar_default = identicon
+  ckan.preview.direct = png jpg gif
+  ckan.preview.loadable = html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
+  ckan.display_timezone = server
+  # package_hide_extras = for_search_index_only
+  #package_edit_return_url = http://another.frontend/dataset/<NAME>
+  #package_new_return_url = http://another.frontend/dataset/<NAME>
+  #licenses_group_url = http://licenses.opendefinition.org/licenses/groups/ckan.json
+  # ckan.template_footer_end =
+  ckan.recaptcha.version = 1
+  ckan.recaptcha.publickey = xxxx
+  ckan.recaptcha.privatekey = xxxx
+   
   ## Internationalisation Settings
   ckan.locale_default = en_AU
-  ckan.locale_order = en_AU ...
+  ckan.locale_order = en_AU pt_BR ja it cs_CZ ca es fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv
+  ckan.locales_offered =
+  ckan.locales_filtered_out = en_GB
   
-  # google recaptcha: your secret credentials
+  ## Feeds Settings
+  ckan.feeds.authority_name =
+  ckan.feeds.date =
+  ckan.feeds.author_name =
+  ckan.feeds.author_link =
+  
+  ## Storage Settings
+  ckan.storage_path = /var/www/storage
+  #ckan.max_resource_size = 10
+  
+  ## Datapusher settings
+  # Make sure you have set up the DataStore
+  ckan.datapusher.formats = csv xls xlsx tsv application/csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ckan.datapusher.url = http://datapusher:8800
+  
+  # Resource Proxy settings
+  ckan.max_resource_size = 1000000
+  ckan.max_image_size = 200000
+  ckan.resource_proxy.max_file_size = 31457280
+  
+  ## Activity Streams Settings
+  ckan.activity_streams_enabled = true
+  ckan.activity_list_limit = 31
+  #ckan.activity_streams_email_notifications = true
+  #ckan.email_notifications_since = 2 days
+  ckan.hide_activity_from_users = %(ckan.site_id)s
+  
+  ## Email settings
+  email_to = xxxx
+  error_email_from = xxxx
+  smtp.server = smtp.gmail.com:587
+  smtp.starttls = True
+  smtp.user = xxxx
+  smtp.password = xxxx
+  smtp.mail_from = xxxx
+  
+  ## Logging configuration
+  [loggers]
+  keys = root, ckan, ckanext
+  [handlers]
+  keys = console
+  [formatters]
+  keys = generic
+  [logger_root]
+  level = WARNING
+  handlers = console
+  [logger_ckan]
+  level = INFO
+  handlers = console
+  qualname = ckan
+  propagate = 0
+  [logger_ckanext]
+  level = INFO
+  handlers = console
+  qualname = ckanext
+  propagate = 0
+  [handler_console]
+  class = StreamHandler
+  args = (sys.stderr,)
+  level = NOTSET
+  formatter = generic
+  [formatter_generic]
+  format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
 
 
 PyCSW
