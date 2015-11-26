@@ -93,6 +93,10 @@ Using https://github.com/SpazioDati/docker-openrefine 's container::
 
   mkdir -p /var/projects/openrefine
   docker run -d -p 3333:3333 -v /var/projects/openrefine/:/mnt/refine/ spaziodati/openrefine
+  
+  # with custom DNS server:
+  #docker run -d -p 3333:3333 -v /var/projects/openrefine/:/mnt/refine/ --dns=10.6.20.100 spaziodati/openrefine
+
 
 
 nginx conf::
