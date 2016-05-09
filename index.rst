@@ -11,8 +11,8 @@ data.wa.gov.au
   :alt: 'Stories in Ready'
 
 .. image:: https://readthedocs.org/projects/datawagovau/badge/?version=latest
-:target: http://datawagovau.readthedocs.org/en/latest/?badge=latest
-:alt: Documentation Status
+  :target: http://datawagovau.readthedocs.org/en/latest/?badge=latest
+  :alt: Documentation Status
 
 This repository contains instructions to setup and deploy a data portal based on CKAN, 
 plus some infrastructure to automate the information pipelines along the pyramid of 
